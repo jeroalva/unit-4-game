@@ -1,0 +1,12 @@
+body {
+    background: url("../images/Background.jpg") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+    font-family: Cardo;
+  }
+
+  .charCol{
+      width: 5%;
+  }
