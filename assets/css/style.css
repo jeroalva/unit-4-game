@@ -5,8 +5,15 @@ body {
     background-size: cover;
     -o-background-size: cover;
     font-family: Cardo;
+    font-style: bold;
   }
 
-  .charCol{
-      width: 5%;
-  }
+.img-responsive{
+    width: 80%;
+    max-height: 125px;
+}
+
+#title{
+    width: 100%;
+    max-width: 600px;
+}
