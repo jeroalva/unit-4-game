@@ -22,6 +22,8 @@ for (var i=0;i<=3;i++){
     characters[i].imag.src = "assets/images/" + characters[i].name + ".jpg";
 }
 
+console.log(characters[1]);
+
 function createElement(charId,parentElement){
 
     var charCol = $("<col>");
@@ -78,7 +80,7 @@ function createAttackButton(){
 
     var attackButton = $("<button>");
     attackButton.attr("id","attackButton");
-    attackButton.addClass("btn btn-danger mt-5 ml-5")
+    attackButton.addClass("btn btn-danger ml-5")
     attackButton.text("Attack");
     attackButton.appendTo($("#buttonCol"));
     }
@@ -90,27 +92,38 @@ function attack(){
             $("#resTextCol").remove(); 
         }
         var resTextCol = $("<div>");
-        resTextCol.addClass("col mt-5");
+        resTextCol.addClass("col");
         resTextCol.attr("id","resTextCol");
         resTextCol.text("You attacked " + characters[theEnem].name + " for a damage of " + characters[myChar].ap + " and he attacked you back for " + characters[theEnem].ap + "!")
-        resTextCol.appendTo("#resRow");
+        resTextCol.appendTo("#resultTitleRow");
         characters[theEnem].hp = characters[theEnem].hp - characters[myChar].ap;
         characters[myChar].hp = characters[myChar].hp - characters[theEnem].Cap;
-        characters[myChar].ap = characters[myChar].ap * 2;
+        characters[myChar].ap = characters[myChar].ap + characters[myChar].Cap;
         $("#charHp" + myChar).text("Health points: " + characters[myChar].hp);
         $("#charHp" + theEnem).text("Health points: " + characters[theEnem].hp);
         if(characters[theEnem].hp<=0 && characters[myChar].hp > 0 && enemLeft > 0){
             $("#charCol" + theEnem).remove();
             enemLeft = enemLeft - 1;
             enemChoosen = false;
+            $("#resultTitle").text("Choose a new enemy!");
+            $("#defenderTitle").text("");
+            $("#enemiesTitle").text("Enemies")
             resTextCol.text("You defeated " + characters[theEnem].name + ", choose a new enemy!");
         }
         if(characters[myChar].hp > 0 && enemLeft <= 0){
             $("#charCol" + theEnem).remove();
             enemChoosen = false;
+            $("#resultTitle").text("");
+            $("#defenderTitle").text("");
+            $("#enemiesTitle").text("")
+            $("#resultTitle").text("¡You have won!")
             resTextCol.text("You have WON!");
         }
         if(characters[myChar].hp <= 0 && enemLeft > 0){
+            $("#resultTitle").text("");
+            $("#defenderTitle").text("");
+            $("#enemiesTitle").text("")
+            $("#resultTitle").text("¡You have lost!")
             resTextCol.text("You have LOST!");
         }
 
@@ -123,6 +136,7 @@ function start(){
     Enemy.empty();
     res.empty();
     for (var j=0;j<characters.length;j++){
+        characters[j].cap = characters[j].ap;
         createElement(j,char);
     }
     charChoosen = enemChoosen = false;
@@ -136,6 +150,8 @@ $(".img-responsive").on("click", function() {
     var clickedElementParentClass = $(this).parent().parent().parent().attr("id");
 
     if(clickedElementParentClass === "characters" && charChoosen === false){
+        $("#charactersTitle").text("Your character");
+        $("#enemiesTitle").text("Enemies: ¡Choose the first enemy you want to attack!");
         for(var i=0;i<characters.length;i++){
             if(i != clickedElementId){
                 $("#charCol" + i).remove();
@@ -154,6 +170,9 @@ $(".img-responsive").on("click", function() {
         console.log(enemLeft);
         console.log(enemChoosen);
         if(clickedElementParentClass ==="enemiesAvailable" && enemLeft>0 && enemChoosen === false){
+            $("#enemiesTitle").text("Enemies")
+            $("#defenderTitle").text("Defender: ¡This is the enemy you are attacking right now!")
+            $("#resultTitle").text("¡Push the button to attack!")
             $("#charCol" + clickedElementId).remove();
             createElement(clickedElementId,Enemy);
             createAttackButton();
