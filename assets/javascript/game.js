@@ -99,12 +99,21 @@ function attack(){
         characters[myChar].ap = characters[myChar].ap * 2;
         $("#charHp" + myChar).text("Health points: " + characters[myChar].hp);
         $("#charHp" + theEnem).text("Health points: " + characters[theEnem].hp);
-        if(characters[theEnem].hp<=0 && characters[myChar].hp > 0){
+        if(characters[theEnem].hp<=0 && characters[myChar].hp > 0 && enemLeft > 0){
             $("#charCol" + theEnem).remove();
             enemLeft = enemLeft - 1;
             enemChoosen = false;
             resTextCol.text("You defeated " + characters[theEnem].name + ", choose a new enemy!");
         }
+        if(characters[myChar].hp > 0 && enemLeft <= 0){
+            $("#charCol" + theEnem).remove();
+            enemChoosen = false;
+            resTextCol.text("You have WON!");
+        }
+        if(characters[myChar].hp <= 0 && enemLeft > 0){
+            resTextCol.text("You have LOST!");
+        }
+
     }
 }
 
