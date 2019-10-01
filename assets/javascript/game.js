@@ -167,7 +167,7 @@ function start(){
             characters.push(i);
             characters[i] = {
                 name : names[i],
-                hp : Math.floor(Math.random()*50 + 100),
+                hp : Math.floor(Math.random()*50 + 1),
                 ap : Math.floor(Math.random()*20 + 5),
                 Cap : Math.floor(Math.random()*20 + 5),
                 imag : new Image()
@@ -182,7 +182,8 @@ function start(){
     $("#charactersTitle").text("Characters: ¡Choose your character!");
     $("#enemiesTitle").text("");
     $("#defenderTitle").text("");
-    if($("resultTitleRed").length>0){
+    console.log($("#resultTitleRed").length);
+    if($("#resultTitleRed").length>0){
         $("#resultTitleRed").attr("id","resultTitle");
         $("#resultTitle").text("");
     }
