@@ -9,19 +9,11 @@ var enemChoosen = false;
 var myChar;
 var theEnem;
 var enemLeft = names.length - 1;
+var colorFoto;
+var lostCount=0;
+var winCount=0;
 
-for (var i=0;i<=3;i++){
-    characters.push(i);
-    characters[i] = {
-        name : names[i],
-        hp : Math.floor(Math.random()*50 + 100),
-        ap : Math.floor(Math.random()*20 + 5),
-        Cap : Math.floor(Math.random()*20 + 5),
-        imag : new Image()
-    }
-    characters[i].imag.src = "assets/images/" + characters[i].name + ".jpg";
-}
-
+console.log(enemAv.attr("id"));
 console.log(characters[1]);
 
 function createElement(charId,parentElement){
@@ -34,10 +26,20 @@ function createElement(charId,parentElement){
     var charRow = $("<div>");
     charRow.addClass("row");
     charRow.attr("id","charRow" + charId);
-    charRow.appendTo("#charCol" + charId)
-;
+    charRow.appendTo("#charCol" + charId);
+
+    if(parentElement.attr("id")==="characters"){
+        colorFoto = "success";
+    }
+    else if(parentElement.attr("id")==="enemiesAvailable"){
+        colorFoto = "secondary";
+    }
+    else if (parentElement.attr("id")==="Defender"){
+        colorFoto = "danger";
+    }
+
     var charj = $("<img>");
-    charj.addClass("img-responsive rounded ml-1 mr-1 mt-4 p-2 bg-success border border-dark");
+    charj.addClass("img-responsive rounded ml-1 mr-1 mt-1 p-2 bg-" + colorFoto   + " border border-dark");
     charj.attr("id","char");
     charj.attr("data-charId",charId);
     charj.attr("src","assets/images/" + characters[charId].name + ".jpg");
@@ -86,6 +88,23 @@ function createAttackButton(){
     }
 }
 
+function createRematchButton(){
+    if(!$("#reMatchButton").length>0){
+
+    var buttonCol = $("<div>");
+    buttonCol.addClass("col");
+    buttonCol.attr("id","buttonCol2");
+    buttonCol.appendTo("#resRow");
+
+    var attackButton = $("<button>");
+    attackButton.attr("id","reMatchButton");
+    attackButton.addClass("btn btn-secondary ml-5")
+    attackButton.text("¡Again!");
+    attackButton.appendTo($("#buttonCol2"));
+    }
+}
+
+
 function attack(){
     if(charChoosen === true && enemChoosen === true && characters[theEnem].hp>0 && characters[myChar].hp>0){
         if($("#resTextCol").length){
@@ -116,25 +135,61 @@ function attack(){
             $("#resultTitle").text("");
             $("#defenderTitle").text("");
             $("#enemiesTitle").text("")
-            $("#resultTitle").text("¡You have won!")
-            resTextCol.text("You have WON!");
+            $("#resTextCol").text("");
+            $("#resultTitle").attr("id","resultTitleGreen")
+            $("#resultTitleGreen").text("¡You have won!")
+            createRematchButton();
+            $("#buttonCol").remove();
+            winCount++;
+            $("#resultTotal").text("Wins: " + winCount + " & Losses: " + lostCount)
         }
         if(characters[myChar].hp <= 0 && enemLeft > 0){
             $("#resultTitle").text("");
             $("#defenderTitle").text("");
             $("#enemiesTitle").text("")
-            $("#resultTitle").text("¡You have lost!")
-            resTextCol.text("You have LOST!");
+            $("#resultTitle").attr("id","resultTitleRed")
+            $("#resultTitleRed").text("¡You have lost!")
+            resTextCol.text("");
+            createRematchButton();
+            $("#buttonCol").remove();
+            lostCount++;
+            $("#resultTotal").text("Wins: " + winCount + " & Losses: " + lostCount)
         }
 
     }
 }
 
+console.log(characters.length);
+
 function start(){
+    characters = [];
+    for (var i=0;i<=3;i++){
+            characters.push(i);
+            characters[i] = {
+                name : names[i],
+                hp : Math.floor(Math.random()*50 + 100),
+                ap : Math.floor(Math.random()*20 + 5),
+                Cap : Math.floor(Math.random()*20 + 5),
+                imag : new Image()
+            }
+        
+        characters[i].imag.src = "assets/images/" + characters[i].name + ".jpg";
+    }
     char.empty();
     enemAv.empty();
     Enemy.empty();
     res.empty();
+    $("#charactersTitle").text("Characters: ¡Choose your character!");
+    $("#enemiesTitle").text("");
+    $("#defenderTitle").text("");
+    if($("resultTitleRed").length>0){
+        $("#resultTitleRed").attr("id","resultTitle");
+        $("#resultTitle").text("");
+    }
+    else if ($("#resultTitleGreen").length>0){
+        $("#resultTitleGreen").attr("id","resultTitle");
+        $("#resultTitle").text("");
+    }
     for (var j=0;j<characters.length;j++){
         characters[j].cap = characters[j].ap;
         createElement(j,char);
@@ -145,7 +200,7 @@ function start(){
 
 start();
 
-$(".img-responsive").on("click", function() {
+$(document).on("click","img", function() {
     var clickedElementId = $(this).attr("data-charId");
     var clickedElementParentClass = $(this).parent().parent().parent().attr("id");
 
@@ -166,21 +221,16 @@ $(".img-responsive").on("click", function() {
     $(document).on("click","img", function() {
         var clickedElementId = $(this).attr("data-charId");
         var clickedElementParentClass = $(this).parent().parent().parent().attr("id");
-        console.log(clickedElementParentClass);
-        console.log(enemLeft);
-        console.log(enemChoosen);
         if(clickedElementParentClass ==="enemiesAvailable" && enemLeft>0 && enemChoosen === false){
             $("#enemiesTitle").text("Enemies")
             $("#defenderTitle").text("Defender: ¡This is the enemy you are attacking right now!")
             $("#resultTitle").text("¡Push the button to attack!")
+            $("#resTextCol").text("");
             $("#charCol" + clickedElementId).remove();
             createElement(clickedElementId,Enemy);
             createAttackButton();
             theEnem = clickedElementId;
             enemChoosen = true;
-            if(enemLeft<(characters.length-1)){
-                $("#resTextCol").text("Empieza a atacar!");
-            }
         }
 })
 
@@ -190,4 +240,10 @@ $(document).on("click","button", function() {
         attack();
     }
 })
-// createElement(0,char);
+
+$(document).on("click","button", function() {
+    var clickedButton = $(this).attr("id");
+    if(clickedButton === "reMatchButton"){
+        start();
+    }
+})
