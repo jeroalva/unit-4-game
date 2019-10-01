@@ -167,7 +167,7 @@ function start(){
             characters.push(i);
             characters[i] = {
                 name : names[i],
-                hp : Math.floor(Math.random()*50 + 1),
+                hp : Math.floor(Math.random()*50 + 80),
                 ap : Math.floor(Math.random()*20 + 5),
                 Cap : Math.floor(Math.random()*20 + 5),
                 imag : new Image()
